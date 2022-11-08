@@ -125,12 +125,7 @@ const App = () => {
         marginTop: 10,
       }}
     >
-      <Container
-        maxWidth="lg"
-        sx={{
-          position: "relative",
-        }}
-      >
+      <Container maxWidth="lg">
         <Box
           sx={{
             position: "relative",
