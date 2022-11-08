@@ -10,6 +10,7 @@ import "vditor/dist/index.css";
 
 const App = () => {
   const [value, setValue] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
     setValue("");
@@ -36,6 +37,7 @@ const App = () => {
 
         handler: async (files) => {
           try {
+            setLoading(true);
             const formData = new FormData();
             formData.append("file", files[0]);
             formData.append("upload_preset", "my-uploads");
@@ -51,9 +53,11 @@ const App = () => {
 
             const name = `![${files[0].name}](${res.secure_url})`;
             vditor.insertValue(name);
+            setLoading(false);
             return name;
           } catch (error) {
             alert(error);
+            setLoading(false);
           }
         },
 
@@ -127,32 +131,29 @@ const App = () => {
           position: "relative",
         }}
       >
-        <Box id="vditor" className="vditor" />
-
-        <Button
-          variant="contained"
+        <Box
           sx={{
-            position: "absolute",
-            bottom: "15px",
-            right: "55px",
+            position: "relative",
           }}
-          size="small"
-          onClick={download}
         >
-          Save
-        </Button>
+          <Box id="vditor" className={`vditor ${loading ? "loading" : ""}`} />
+
+          <Button
+            variant="contained"
+            sx={{
+              position: "absolute",
+              bottom: "15px",
+              right: "30px",
+            }}
+            size="small"
+            onClick={download}
+          >
+            Save
+          </Button>
+        </Box>
       </Container>
     </Box>
   );
 };
 
 export default App;
-
-// file.onload = () => {
-//   const response = JSON.parse(file.responseText);
-//   if (file.status === 200) {
-//     const url = response.data.url;
-//     const vditor = this.vditor;
-//     vditor.insertValue(`![](${url})`);
-//   }
-// };
