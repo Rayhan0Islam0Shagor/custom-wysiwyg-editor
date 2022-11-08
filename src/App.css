@@ -5,3 +5,13 @@
   justify-content: flex-start !important;
   gap: 10px !important;
 }
+
+.vditor-icon {
+  display: none !important;
+}
+
+.vditor-reset > p > img {
+  width: 150px !important;
+  height: 150px !important;
+  object-fit: contain;
+}

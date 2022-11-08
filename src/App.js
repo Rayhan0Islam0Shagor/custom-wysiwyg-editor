@@ -14,7 +14,7 @@ const App = () => {
   React.useEffect(() => {
     setValue("");
 
-    new Vditor("vditor", {
+    const vditor = new Vditor("vditor", {
       height: 360,
       cache: {
         enable: false,
@@ -28,104 +28,54 @@ const App = () => {
         pin: true,
       },
 
-      // 语言，内置：'zh_CN', 'en_US'
       lang: "en_US",
 
       // picture add function
       upload: {
         accept: "image/jpeg,image/gif,image/png,image/webp,image/svg",
-        url: "https://api.imgbb.com/1/upload",
-        linkToImgUrl: "https://api.imgbb.com/1/upload",
-        token: "3fc5075c524c5624f9709f9b154b62b5",
 
-        handler: (file) => {
-          // convert this file to base64
+        handler: async (files) => {
+          try {
+            const formData = new FormData();
+            formData.append("file", files[0]);
+            formData.append("upload_preset", "my-uploads");
 
-          function getBase64(img) {
-            return new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.readAsDataURL(img);
-              reader.onload = () => resolve(reader.result);
-              reader.onerror = (error) => reject(error);
-            });
+            const data = await fetch(
+              `https://api.cloudinary.com/v1_1/dakiuwhwl/image/upload`,
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+            const res = await data.json();
+
+            const name = `![${files[0].name}](${res.secure_url})`;
+            vditor.insertValue(name);
+            return name;
+          } catch (error) {
+            alert(error);
           }
-
-          getBase64(file).then((base64) => {
-            // send base64 to server
-            console.log(base64);
-          });
-
-          // const formData = new FormData();
-          // formData.append("image", file);
-          // formData.append("key", "3fc5075c524c5624f9709f9b154b62b5");
-
-          // return fetch("https://api.imgbb.com/1/upload", {
-          //   method: "POST",
-          //   body: formData,
-          // })
-          //   .then((response) => response.json())
-          //   .then((result) => {
-          //     console.log(result);
-          //     return result.data.url;
-          //   })
-          //   .catch((error) => {
-          //     console.error("Error:", error);
-          //   });
-
-          // file.onload = () => {
-          //   const response = JSON.parse(file.responseText);
-          //   if (file.status === 200) {
-          //     const url = response.data.url;
-          //     const vditor = this.vditor;
-          //     vditor.insertValue(`![](${url})`);
-          //   }
-          // };
-
-          // const formData = new FormData();
-          // formData.append("image", file);
-
-          // fetch(
-          //   "https://api.imgbb.com/1/upload?key=3fc5075c524c5624f9709f9b154b62b5",
-          //   {
-          //     method: "POST",
-          //     body: formData,
-          //   }
-          // )
-          //   .then((response) => response.json())
-          //   .then((result) => {
-          //     console.log("Success:", result);
-          //   })
-          //   .catch((error) => {
-          //     console.error("Error:", error);
-          //   });
         },
 
-        filename: (name) => {},
-
-        // filename(name) {
-        //   return name
-        //     .replace(/[^(a-zA-Z0-9\u4e00-\u9fa5\.)]/g, "")
-        //     .replace(/[\?\\/:|<>\*\[\]\(\)\$%\{\}@~]/g, "")
-        //     .replace("/\\s/g", "");
+        // format: (response) => {
+        //   return response.secure_url;
         // },
 
-        // imagebb response data
-        format: (json) => {
-          return json.data.url;
-        },
+        // linkToImgFormat: (url) => {
+        //   return `![${url}](${url})`;
+        // },
 
-        // url: "https://hacpai.com/api/upload/picture",
-        // linkToImgUrl: "https://hacpai.com/api/upload/picture",
+        // linkToImgCallback(url) {
+        //   console.log(url);
+        // },
 
-        success(editor, msg) {
-          console.log(editor + "上传成功" + msg);
-          editor.innerHTML =
-            editor.innerHTML +
-            "![image.png](http://localhost/dz/static/image/common/logo.png)";
-        },
-        error(msg) {
-          console.log("上传成失败:" + msg);
-        },
+        // success(editor, msg) {
+        //   editor.innerHTML = editor.innerHTML + `![image.png](${msg})`;
+        // },
+
+        // error(msg) {
+        //   alert(msg);
+        // },
       },
 
       toolbar: [
@@ -197,3 +147,12 @@ const App = () => {
 };
 
 export default App;
+
+// file.onload = () => {
+//   const response = JSON.parse(file.responseText);
+//   if (file.status === 200) {
+//     const url = response.data.url;
+//     const vditor = this.vditor;
+//     vditor.insertValue(`![](${url})`);
+//   }
+// };
