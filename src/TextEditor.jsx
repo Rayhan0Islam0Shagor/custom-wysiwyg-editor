@@ -13,7 +13,8 @@ const TextEditor = () => {
 
   return (
     <Editor
-      initialValue='Write here...'
+      placeholder='Write here...'
+      initialValue={value}
       previewStyle='vertical'
       height='600px'
       initialEditType='wysiwyg'
