@@ -5,9 +5,40 @@ import * as FaIcons from "react-icons/fa";
 import { Editor } from "@toast-ui/react-editor";
 
 const TextEditor = ({ value, setValue }) => {
+  console.log("🚀 ~ file: TextEditor.jsx ~ line 8 ~ TextEditor ~ value", value);
   const editorRef = useRef(null);
 
-  useEffect(() => {}, [value]);
+  useEffect(() => {
+    const editor = editorRef.current.getInstance();
+    const editorEl = editor.getMarkdown();
+    const images = [];
+    const imagesFromMarkdown = editorEl.match(/!\[.*?\]\(.*?\)/g);
+
+    if (imagesFromMarkdown) {
+      imagesFromMarkdown.forEach((image) => {
+        const imageSrc = image.match(/\(.*?\)/g)[0].slice(1, -1);
+        const newImageStr = `[${image}](${imageSrc})`;
+
+        images.push(newImageStr);
+      });
+    }
+
+    const newValue = value.match(/!\[.*?\]\(.*?\)/g);
+
+    if (newValue) {
+      newValue.forEach((image) => {
+        const imageSrc = image.match(/\(.*?\)/g)[0].slice(1, -1);
+
+        images.forEach((newImage) => {
+          const newImageSrc = newImage.match(/\(.*?\)/g)[0].slice(1, -1);
+
+          if (imageSrc === newImageSrc) {
+            setValue((prev) => prev.replace(image, newImage));
+          }
+        });
+      });
+    }
+  }, []);
 
   return (
     <Box
@@ -33,7 +64,7 @@ const TextEditor = ({ value, setValue }) => {
       <Box
         sx={{
           position: "absolute",
-          top: "5px",
+          top: "9px",
           right: {
             xs: "5px",
             md: "10px",
