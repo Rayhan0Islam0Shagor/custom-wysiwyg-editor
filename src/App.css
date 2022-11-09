@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.toastui-editor-defaultUI-toolbar {
+  padding-right: 100px !important;
+}
+
+.undo-redo-btn {
+  height: 35px;
+  width: 35px;
+}
+
+@media screen and (max-width: 900px) {
+  .undo-redo-btn {
+    height: 30px;
+    width: 30px;
+  }
+}
