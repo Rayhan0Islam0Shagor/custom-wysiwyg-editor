@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
